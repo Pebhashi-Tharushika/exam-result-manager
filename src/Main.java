@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -18,7 +17,7 @@ public class Main {
                 promptAddNewStudent();
                 break;
             case 2:
-                addNewStudentWithMarks();
+                promptAddNewStudentWithMarks();
             case 3:
                 addMarks();
             case 4:
@@ -76,8 +75,13 @@ public class Main {
 
     }
 
-    private static void addNewStudentWithMarks() {
+    private static void promptAddNewStudentWithMarks() {
+        clearConsole();
+        printDashes();
+        printTitle("ADD NEW STUDENT WITH MARKS");
+        printDashes();
 
+        Scanner scanner = new Scanner(System.in);
     }
 
     private static void promptAddNewStudent() {
@@ -97,7 +101,7 @@ public class Main {
             isExistId = isExistStudentId(studentId);
 
             if (isExistId) {
-                System.out.println("The student ID already exist");
+                System.out.println("The student ID already exist\n");
             }
 
         } while (isExistId);
@@ -109,18 +113,33 @@ public class Main {
         addNewStudentName(studentName);
 
         System.out.println();
-        System.out.print("Student has been added successfully. Do you want to add new student (Y/N): ");
-        String answer = scanner.next();
+        answerYesOrNo("Student has been added successfully. Do you want to add new student (Y/N): ");
 
-        switch (answer.toUpperCase()) {
-            case "Y":
+    }
+
+     private static void answerYesOrNo(String text) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+
+            System.out.print(text);  // Print the question again
+
+            String answer = scanner.next().trim().toUpperCase();
+
+            if ("Y".equals(answer)) {
                 promptAddNewStudent();
                 break;
-            case "N":
+            } else if ("N".equals(answer)) {
                 promptHomePage();
                 break;
-//                default: InvalidAnswer();
+            }else{
+                moveCursorUpAndClear();  // Move cursor to top and clear the line
+            }
         }
+    }
+
+    private static void moveCursorUpAndClear() {
+        System.out.print("\033[F\033[K"); // Move cursor up one line and clear it
     }
 
     private static void addNewStudentId(String studentId) {
@@ -131,14 +150,12 @@ public class Main {
         studentNameArray = addNewElementToArray(studentNameArray, studentName);
     }
 
-
     private static String[] addNewElementToArray(String[] array, String value) {
         String[] tempArray = new String[array.length + 1];
         System.arraycopy(array, 0, tempArray, 0, array.length);
         tempArray[array.length] = value; // Add new element at the last index
         return tempArray;
     }
-
 
     private static boolean isExistStudentId(String studentId) {
         for (String id : studentIdArray) {
