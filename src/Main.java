@@ -36,8 +36,27 @@ public class Main {
 
     }
 
-    private static void updateMarks() {
+    private static void promptUpdateMarks() {
+        clearConsole();
+        printDashes();
+        printTitle("UPDATE MARKS");
+        printDashes();
 
+        int index = fetchAlreadyExistStudentIndex();
+        System.out.println("Student Name       : " + studentNameArray[index]);
+
+        if (marksPrfArray[index] == -1 || marksDbmsArray[index] == -1) {
+            System.out.println("\nThis student's marks yet to be added.");
+            answerYesOrNo("Do you want to update marks of another student (Y/n): ", 5);
+            return;
+        }
+        System.out.println("\nProgramming Fundamentals Marks   : " + marksPrfArray[index]);
+        System.out.println("Database Management System Marks : " + marksDbmsArray[index]);
+
+        addStudentMarks(index, false);
+
+        System.out.println("\nMarks have been updated successfully");
+        answerYesOrNo("Do you want to update marks for another student (Y/n): ", 5);
     }
 
     private static void promptUpdateStudentDetails() {
@@ -73,31 +92,10 @@ public class Main {
             return;
         }
 
-        addStudentMarks(index);
+        addStudentMarks(index, true);
 
         System.out.println();
         answerYesOrNo("Marks have been added. Do you want to add marks for another student (Y/n): ", 3);
-    }
-
-    private static int fetchAlreadyExistStudentIndex() {
-        String studentId;
-        boolean isExistId, isAgain;
-
-        do {
-            System.out.print("\nEnter Student ID   : ");
-            studentId = scanner.next();
-            isExistId = findStudentIndexById(studentId) != -1;
-
-            if (!isExistId) {
-                isAgain = searchAgainOrNot("Invalid Student ID. Do you want to search again? (Y/n)");
-                if (!isAgain) {
-                    promptHomePage();
-                    break;
-                }
-            }
-
-        } while (!isExistId);
-        return findStudentIndexById(studentId);
     }
 
     private static void promptAddNewStudentWithMarks() {
@@ -107,7 +105,7 @@ public class Main {
         printDashes();
 
         addNewStudentIdAndName();
-        addStudentMarks(-1);
+        addStudentMarks(-1, true);
 
         System.out.println();
         answerYesOrNo("Student has been added successfully. Do you want to add new student (Y/n): ", 2);
@@ -145,13 +143,13 @@ public class Main {
         chooseOption(option);
     }
 
-    private static void addStudentMarks(int index) {
+    private static void addStudentMarks(int index, boolean isAdd) {
 
         int marksPrf, marksDbms;
         boolean isInvalidMarksPrf, isInvalidMarksDbms;
 
         do {
-            System.out.print("\nProgramming Fundamental Marks     : ");
+            System.out.print("\n" + (isAdd ? "" : "Enter new ") + "Programming Fundamental Marks     : ");
             marksPrf = scanner.nextInt();
             isInvalidMarksPrf = (marksPrf < 0 || 100 < marksPrf);
             if (isInvalidMarksPrf) System.out.println("Invalid marks. Please enter correct marks");
@@ -163,7 +161,7 @@ public class Main {
             marksPrfArray[index] = marksPrf;
         }
         do {
-            System.out.print("Database Management System Marks  : ");
+            System.out.print((isAdd ? "" : "Enter new ") + "Database Management System Marks  : ");
             marksDbms = scanner.nextInt();
             isInvalidMarksDbms = (marksDbms < 0 || 100 < marksDbms);
             if (isInvalidMarksDbms) System.out.println("Invalid marks. Please enter correct marks\n");
@@ -228,6 +226,27 @@ public class Main {
         return marks;
     }
 
+    private static int fetchAlreadyExistStudentIndex() {
+        String studentId;
+        boolean isExistId, isAgain;
+
+        do {
+            System.out.print("\nEnter Student ID   : ");
+            studentId = scanner.next();
+            isExistId = findStudentIndexById(studentId) != -1;
+
+            if (!isExistId) {
+                isAgain = searchAgainOrNot("Invalid Student ID. Do you want to search again? (Y/n)");
+                if (!isAgain) {
+                    promptHomePage();
+                    break;
+                }
+            }
+
+        } while (!isExistId);
+        return findStudentIndexById(studentId);
+    }
+
     private static void answerYesOrNo(String text, int num) {
 
         while (true) {
@@ -277,7 +296,7 @@ public class Main {
             case 4:
                 promptUpdateStudentDetails();
             case 5:
-                updateMarks();
+                promptUpdateMarks();
             case 6:
                 deleteStudent();
             case 7:
