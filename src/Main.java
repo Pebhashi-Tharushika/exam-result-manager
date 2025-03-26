@@ -12,37 +12,6 @@ public class Main {
         promptHomePage();
     }
 
-    private static void chooseOption() {
-        Scanner scanner = new Scanner(System.in);
-        int option = scanner.nextInt();
-        switch (option) {
-            case 1:
-                promptAddNewStudent();
-                break;
-            case 2:
-                promptAddNewStudentWithMarks();
-            case 3:
-                addMarks();
-            case 4:
-                updateStudentDetails();
-            case 5:
-                updateMarks();
-            case 6:
-                deleteStudent();
-            case 7:
-                printStudentDetails();
-            case 8:
-                printStudentRanks();
-            case 9:
-                rankBestInPrf();
-            case 10:
-                rankBestInDbms();
-            default:
-                invalidOption();
-
-        }
-    }
-
     private static void invalidOption() {
     }
 
@@ -61,7 +30,6 @@ public class Main {
     private static void printStudentDetails() {
     }
 
-
     private static void deleteStudent() {
 
     }
@@ -74,8 +42,55 @@ public class Main {
 
     }
 
-    private static void addMarks() {
+    private static void promptAddMarks() {
+        clearConsole();
+        printDashes();
+        printTitle("ADD MARKS");
+        printDashes();
 
+        Scanner scanner = new Scanner(System.in);
+
+        String studentId;
+        boolean isExistId, isAgain;
+
+        do {
+            System.out.print("\nEnter Student ID   : ");
+            studentId = scanner.next();
+            isExistId = findStudentIndexById(studentId) != -1;
+
+            if (!isExistId) {
+                isAgain = searchAgainOrNot("Invalid Student ID. Do you want to search again? (Y/n)");
+                if (!isAgain) {
+                    promptHomePage();
+                    break;
+                }
+            }
+
+        } while (!isExistId);
+
+
+        int index = findStudentIndexById(studentId);
+        System.out.println("Student Name       : " + studentNameArray[index]);
+
+        int[] marks= findMarksById(index);
+        if(marks[0] != -1 && marks[1] != -1){
+            System.out.println("This student marks have been already added.");
+            System.out.println("If you want to update marks, please use [4] Update Marks option.\n");
+            answerYesOrNo("Do you want to add marks for another student (Y/n): ",3);
+            return;
+        }
+
+        addStudentMarks(index);
+
+        System.out.println();
+        answerYesOrNo("Marks have been added. Do you want to add marks for another student (Y/n): ", 3);
+    }
+
+    private static int[] findMarksById(int index) {
+        int[] marks = new int[2];
+        marks[0] = marksPrfArray[index];
+        marks[1] = marksDbmsArray[index];
+        return marks;
     }
 
     private static void promptAddNewStudentWithMarks() {
@@ -85,13 +100,46 @@ public class Main {
         printDashes();
 
         addNewStudentIdAndName();
-        addStudentMarks();
+        addStudentMarks(-1);
 
         System.out.println();
-        answerYesOrNo("Student has been added successfully. Do you want to add new student (Y/n): ",2);
+        answerYesOrNo("Student has been added successfully. Do you want to add new student (Y/n): ", 2);
     }
 
-    private static void addStudentMarks() {
+    private static void promptAddNewStudent() {
+        clearConsole();
+        printDashes();
+        printTitle("ADD NEW STUDENT");
+        printDashes();
+
+        addNewStudentIdAndName();
+        marksPrfArray = addNewElementToArray(marksPrfArray, -1); // add new student PRF marks
+        marksDbmsArray = addNewElementToArray(marksDbmsArray, -1); // add new student DBMS marks
+
+        System.out.println();
+        answerYesOrNo("Student has been added successfully. Do you want to add new student (Y/n): ", 1);
+    }
+
+    public static void promptHomePage() {
+        clearConsole();
+
+        printDashes();
+        printTitle("WELCOME TO STUDENT MARKS MANAGEMENT SYSTEM");
+        printDashes();
+        System.out.printf("[1] %-35s [2] %-35s\n", "Add New Student", "Add New Student With Marks");
+        System.out.printf("[3] %-35s [4] %-35s\n", "Add Marks", "Update Student Details");
+        System.out.printf("[5] %-35s [6] %-35s\n", "Update Marks", "Delete Student");
+        System.out.printf("[7] %-35s [8] %-35s\n", "Print Student Details", "Print Student Ranks");
+        System.out.printf("[9] %-35s [10] %-35s\n", "Best in Programming Fundamentals", "Best in Database Management System");
+
+        System.out.print("Enter an option to continue > ");
+
+        Scanner scanner = new Scanner(System.in);
+        int option = scanner.nextInt();
+        chooseOption(option);
+    }
+
+    private static void addStudentMarks(int index) {
         Scanner scanner = new Scanner(System.in);
 
         int marksPrf, marksDbms;
@@ -104,8 +152,11 @@ public class Main {
             if (isInvalidMarksPrf) System.out.println("Invalid marks. Please enter correct marks");
         } while (isInvalidMarksPrf);
 
-        marksPrfArray = addNewElementToArray(marksPrfArray, marksPrf); // add new student PRF marks
-
+        if (index == -1) {
+            marksPrfArray = addNewElementToArray(marksPrfArray, marksPrf); // add new student PRF marks
+        } else {
+            marksPrfArray[index] = marksPrf;
+        }
         do {
             System.out.print("Database Management System Marks  : ");
             marksDbms = scanner.nextInt();
@@ -113,19 +164,11 @@ public class Main {
             if (isInvalidMarksDbms) System.out.println("Invalid marks. Please enter correct marks\n");
         } while (isInvalidMarksDbms);
 
-        marksDbmsArray = addNewElementToArray(marksDbmsArray, marksDbms); // add new student DBMS marks
-    }
-
-    private static void promptAddNewStudent() {
-        clearConsole();
-        printDashes();
-        printTitle("ADD NEW STUDENT");
-        printDashes();
-
-        addNewStudentIdAndName();
-
-        System.out.println();
-        answerYesOrNo("Student has been added successfully. Do you want to add new student (Y/n): ",1);
+        if (index == -1) {
+            marksDbmsArray = addNewElementToArray(marksDbmsArray, marksDbms); // add new student DBMS marks
+        } else {
+            marksDbmsArray[index] = marksDbms;
+        }
     }
 
     private static void addNewStudentIdAndName() {
@@ -137,7 +180,7 @@ public class Main {
         do {
             System.out.print("Enter Student ID   : ");
             studentId = scanner.next();
-            isExistId = isExistStudentId(studentId);
+            isExistId = findStudentIndexById(studentId) != -1;
 
             if (isExistId) {
                 System.out.println("The student ID already exist\n");
@@ -166,11 +209,12 @@ public class Main {
         return tempArray;
     }
 
-    private static boolean isExistStudentId(String studentId) {
-        for (String id : studentIdArray) {
-            if (id.equalsIgnoreCase(studentId)) return true;
+    private static int findStudentIndexById(String studentId) {
+        for (int i = 0; i < studentIdArray.length; i++) {
+            if (studentIdArray[i].equalsIgnoreCase(studentId))
+                return i;
         }
-        return false;
+        return -1;
     }
 
     private static void answerYesOrNo(String text, int num) {
@@ -178,17 +222,30 @@ public class Main {
 
         while (true) {
             System.out.print(text);
-
             String answer = scanner.next().trim().toUpperCase();
 
             if ("Y".equals(answer)) {
-                switch(num){
-                    case 1:promptAddNewStudent();break;
-                    case 2: promptAddNewStudentWithMarks();break;
-                }
+                chooseOption(num);
             } else if ("N".equals(answer)) {
                 promptHomePage();
                 break;
+            } else {
+                moveCursorUpAndClear();  // Move cursor to top and clear the line
+            }
+        }
+    }
+
+    private static boolean searchAgainOrNot(String text) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.print(text);
+            String answer = scanner.next().trim().toUpperCase();
+
+            if ("Y".equals(answer)) {
+                return true;
+            } else if ("N".equals(answer)) {
+                return false;
             } else {
                 moveCursorUpAndClear();  // Move cursor to top and clear the line
             }
@@ -199,20 +256,33 @@ public class Main {
         System.out.print("\033[F\033[K"); // Move cursor up one line and clear it
     }
 
-    public static void promptHomePage() {
-        clearConsole();
+    private static void chooseOption(int option) {
+        switch (option) {
+            case 1:
+                promptAddNewStudent();
+                break;
+            case 2:
+                promptAddNewStudentWithMarks();
+            case 3:
+                promptAddMarks();
+            case 4:
+                updateStudentDetails();
+            case 5:
+                updateMarks();
+            case 6:
+                deleteStudent();
+            case 7:
+                printStudentDetails();
+            case 8:
+                printStudentRanks();
+            case 9:
+                rankBestInPrf();
+            case 10:
+                rankBestInDbms();
+            default:
+                invalidOption();
 
-        printDashes();
-        printTitle("WELCOME TO STUDENT MARKS MANAGEMENT SYSTEM");
-        printDashes();
-        System.out.printf("[1] %-35s [2] %-35s\n", "Add New Student", "Add New Student With Marks");
-        System.out.printf("[3] %-35s [4] %-35s\n", "Add Marks", "Update Student Details");
-        System.out.printf("[5] %-35s [6] %-35s\n", "Update Marks", "Delete Student");
-        System.out.printf("[7] %-35s [8] %-35s\n", "Print Student Details", "Print Student Ranks");
-        System.out.printf("[9] %-35s [10] %-35s\n", "Best in Programming Fundamentals", "Best in Database Management System");
-
-        System.out.print("Enter an option to continue > ");
-        chooseOption();
+        }
     }
 
     public static void printTitle(String title) {
