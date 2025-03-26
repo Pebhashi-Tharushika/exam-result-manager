@@ -32,8 +32,50 @@ public class Main {
     private static void printStudentDetails() {
     }
 
-    private static void deleteStudent() {
+    private static void promptDeleteStudent() {
+        clearConsole();
+        printDashes();
+        printTitle("DELETE STUDENT");
+        printDashes();
 
+        int index = fetchAlreadyExistStudentIndex();
+
+        deleteStudent(index);
+
+        System.out.println("\nStudent has been deleted successfully");
+        answerYesOrNo("Do you want to delete another student? (Y/n)", 6);
+
+    }
+
+    private static void deleteStudent(int index) {
+        studentIdArray = removeElementFromArray(studentIdArray, index);
+        studentNameArray = removeElementFromArray(studentNameArray, index);
+        marksPrfArray = removeElementFromArray(marksPrfArray, index);
+        marksDbmsArray = removeElementFromArray(marksDbmsArray, index);
+    }
+
+    private static int[] removeElementFromArray(int[] array, int index) {
+        int[] newArray = new int[array.length - 1];
+        for (int i = 0; i < newArray.length; i++) {
+            if (i < index) {
+                newArray[i] = array[i];
+            } else {
+                newArray[i] = array[i + 1];
+            }
+        }
+        return newArray;
+    }
+
+    private static String[] removeElementFromArray(String[] array, int index) {
+        String[] newArray = new String[array.length - 1];
+        for (int i = 0; i < newArray.length; i++) {
+            if (i < index) {
+                newArray[i] = array[i];
+            } else {
+                newArray[i] = array[i + 1];
+            }
+        }
+        return newArray;
     }
 
     private static void promptUpdateMarks() {
@@ -298,7 +340,7 @@ public class Main {
             case 5:
                 promptUpdateMarks();
             case 6:
-                deleteStudent();
+                promptDeleteStudent();
             case 7:
                 printStudentDetails();
             case 8:
