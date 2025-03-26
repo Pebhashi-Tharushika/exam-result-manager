@@ -41,7 +41,19 @@ public class Main {
     }
 
     private static void promptUpdateStudentDetails() {
+        clearConsole();
+        printDashes();
+        printTitle("UPDATE STUDENT DETAILS");
+        printDashes();
 
+        int index = fetchAlreadyExistStudentIndex();
+        System.out.println("Student Name       : " + studentNameArray[index]);
+
+        System.out.print("\nEnter the new student name  : ");
+        studentNameArray[index] = scanner.next();
+
+        System.out.println("\nStudent details has been updated successfully");
+        answerYesOrNo("Do you want to update another student details? (Y/n)", 4);
     }
 
     private static void promptAddMarks() {
@@ -50,6 +62,24 @@ public class Main {
         printTitle("ADD MARKS");
         printDashes();
 
+        int index = fetchAlreadyExistStudentIndex();
+        System.out.println("Student Name       : " + studentNameArray[index]);
+
+        int[] marks = findMarksById(index);
+        if (marks[0] != -1 && marks[1] != -1) {
+            System.out.println("This student marks have been already added.");
+            System.out.println("If you want to update marks, please use [4] Update Marks option.\n");
+            answerYesOrNo("Do you want to add marks for another student (Y/n): ", 3);
+            return;
+        }
+
+        addStudentMarks(index);
+
+        System.out.println();
+        answerYesOrNo("Marks have been added. Do you want to add marks for another student (Y/n): ", 3);
+    }
+
+    private static int fetchAlreadyExistStudentIndex() {
         String studentId;
         boolean isExistId, isAgain;
 
@@ -67,23 +97,7 @@ public class Main {
             }
 
         } while (!isExistId);
-
-
-        int index = findStudentIndexById(studentId);
-        System.out.println("Student Name       : " + studentNameArray[index]);
-
-        int[] marks = findMarksById(index);
-        if (marks[0] != -1 && marks[1] != -1) {
-            System.out.println("This student marks have been already added.");
-            System.out.println("If you want to update marks, please use [4] Update Marks option.\n");
-            answerYesOrNo("Do you want to add marks for another student (Y/n): ", 3);
-            return;
-        }
-
-        addStudentMarks(index);
-
-        System.out.println();
-        answerYesOrNo("Marks have been added. Do you want to add marks for another student (Y/n): ", 3);
+        return findStudentIndexById(studentId);
     }
 
     private static void promptAddNewStudentWithMarks() {
