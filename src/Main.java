@@ -7,9 +7,11 @@ public class Main {
     public static int[] marksPrfArray = new int[0];
     public static int[] marksDbmsArray = new int[0];
 
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         promptHomePage();
+        scanner.close();
     }
 
     private static void invalidOption() {
@@ -38,7 +40,7 @@ public class Main {
 
     }
 
-    private static void updateStudentDetails() {
+    private static void promptUpdateStudentDetails() {
 
     }
 
@@ -47,8 +49,6 @@ public class Main {
         printDashes();
         printTitle("ADD MARKS");
         printDashes();
-
-        Scanner scanner = new Scanner(System.in);
 
         String studentId;
         boolean isExistId, isAgain;
@@ -72,11 +72,11 @@ public class Main {
         int index = findStudentIndexById(studentId);
         System.out.println("Student Name       : " + studentNameArray[index]);
 
-        int[] marks= findMarksById(index);
-        if(marks[0] != -1 && marks[1] != -1){
+        int[] marks = findMarksById(index);
+        if (marks[0] != -1 && marks[1] != -1) {
             System.out.println("This student marks have been already added.");
             System.out.println("If you want to update marks, please use [4] Update Marks option.\n");
-            answerYesOrNo("Do you want to add marks for another student (Y/n): ",3);
+            answerYesOrNo("Do you want to add marks for another student (Y/n): ", 3);
             return;
         }
 
@@ -84,13 +84,6 @@ public class Main {
 
         System.out.println();
         answerYesOrNo("Marks have been added. Do you want to add marks for another student (Y/n): ", 3);
-    }
-
-    private static int[] findMarksById(int index) {
-        int[] marks = new int[2];
-        marks[0] = marksPrfArray[index];
-        marks[1] = marksDbmsArray[index];
-        return marks;
     }
 
     private static void promptAddNewStudentWithMarks() {
@@ -134,13 +127,11 @@ public class Main {
 
         System.out.print("Enter an option to continue > ");
 
-        Scanner scanner = new Scanner(System.in);
         int option = scanner.nextInt();
         chooseOption(option);
     }
 
     private static void addStudentMarks(int index) {
-        Scanner scanner = new Scanner(System.in);
 
         int marksPrf, marksDbms;
         boolean isInvalidMarksPrf, isInvalidMarksDbms;
@@ -172,7 +163,6 @@ public class Main {
     }
 
     private static void addNewStudentIdAndName() {
-        Scanner scanner = new Scanner(System.in);
 
         String studentId;
         boolean isExistId;
@@ -217,8 +207,14 @@ public class Main {
         return -1;
     }
 
+    private static int[] findMarksById(int index) {
+        int[] marks = new int[2];
+        marks[0] = marksPrfArray[index];
+        marks[1] = marksDbmsArray[index];
+        return marks;
+    }
+
     private static void answerYesOrNo(String text, int num) {
-        Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.print(text);
@@ -236,7 +232,6 @@ public class Main {
     }
 
     private static boolean searchAgainOrNot(String text) {
-        Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.print(text);
@@ -266,7 +261,7 @@ public class Main {
             case 3:
                 promptAddMarks();
             case 4:
-                updateStudentDetails();
+                promptUpdateStudentDetails();
             case 5:
                 updateMarks();
             case 6:
