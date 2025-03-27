@@ -26,7 +26,24 @@ public class Main {
     }
 
     private static void promptRankBestInDbms() {
+    clearConsole();
+        printDashes();
+        printTitle("BEST IN DATABASE MANAGEMENT SYSTEM");
+        printDashes();
 
+        System.out.printf("+%s+%s+%s+%s+%n", "-".repeat(10), "-".repeat(37), "-".repeat(14), "-".repeat(14));
+        System.out.printf("|%-10s|%-37s|%-14s|%-14s|%n", "ID", "Name", "DBMS Marks", "PF Marks");
+        System.out.printf("+%s+%s+%s+%s+%n", "-".repeat(10), "-".repeat(37), "-".repeat(14), "-".repeat(14));
+
+        if (rankStudents("DBMS")) {
+            for (int i = 0; i < validRank.length; i++) {
+                System.out.printf("|%-10s|%-37s|%-14d|%-14d|%n",
+                        validIds[i], validNames[i], validPrimaryMarks[i], validSecondaryMarks[i]);
+            }
+        }
+        System.out.printf("+%s+%s+%s+%s+%n", "-".repeat(10), "-".repeat(37), "-".repeat(14), "-".repeat(14));
+
+        answerYesOrNo("Do you want to go back to main menu? (Y/n): ", 10);
     }
 
     private static void promptRankBestInPrf() {
