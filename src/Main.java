@@ -22,11 +22,8 @@ public class Main {
         scanner.close();
     }
 
-    private static void invalidOption() {
-    }
-
     private static void promptRankBestInDbms() {
-    clearConsole();
+        clearConsole();
         printDashes();
         printTitle("BEST IN DATABASE MANAGEMENT SYSTEM");
         printDashes();
@@ -43,7 +40,7 @@ public class Main {
         }
         System.out.printf("+%s+%s+%s+%s+%n", "-".repeat(10), "-".repeat(37), "-".repeat(14), "-".repeat(14));
 
-        answerYesOrNo("Do you want to go back to main menu? (Y/n): ", 10);
+        answerYesOrNo("Do you want to go back to main menu? (Y/n): ", "10");
     }
 
     private static void promptRankBestInPrf() {
@@ -64,7 +61,7 @@ public class Main {
         }
         System.out.printf("+%s+%s+%s+%s+%n", "-".repeat(10), "-".repeat(37), "-".repeat(14), "-".repeat(14));
 
-        answerYesOrNo("Do you want to go back to main menu? (Y/n): ", 9);
+        answerYesOrNo("Do you want to go back to main menu? (Y/n): ", "9");
 
     }
 
@@ -87,7 +84,7 @@ public class Main {
 
         System.out.printf("+%s+%s+%s+%s+%s+%n", "-".repeat(7), "-".repeat(8), "-".repeat(35), "-".repeat(12), "-".repeat(12));
 
-        answerYesOrNo("Do you want to go back to main menu? (Y/n): ", 8);
+        answerYesOrNo("Do you want to go back to main menu? (Y/n): ", "8");
 
     }
 
@@ -103,7 +100,7 @@ public class Main {
 
         if (marksPrfArray[index] == -1 || marksDbmsArray[index] == -1) {
             System.out.println("\nMarks yet to be added.\n");
-            answerYesOrNo("Do you want to search another student details (Y/n): ", 7);
+            answerYesOrNo("Do you want to search another student details (Y/n): ", "7");
             return;
         }
 
@@ -124,7 +121,7 @@ public class Main {
         System.out.printf("|%-35s|%15s|%n", "Rank", rank + (isAvailableTextRank ? getTextRank(rank) : ""));
         System.out.printf("+%s+%s+%n", "-".repeat(35), "-".repeat(15));
 
-        answerYesOrNo("Do you want to search another student details (Y/n): ", 7);
+        answerYesOrNo("Do you want to search another student details (Y/n): ", "7");
     }
 
     private static void promptDeleteStudent() {
@@ -139,7 +136,7 @@ public class Main {
         deleteStudent(index);
 
         System.out.println("\nStudent has been deleted successfully");
-        answerYesOrNo("Do you want to delete another student? (Y/n)", 6);
+        answerYesOrNo("Do you want to delete another student? (Y/n)", "6");
 
     }
 
@@ -155,7 +152,7 @@ public class Main {
 
         if (marksPrfArray[index] == -1 || marksDbmsArray[index] == -1) {
             System.out.println("\nThis student's marks yet to be added.");
-            answerYesOrNo("Do you want to update marks of another student (Y/n): ", 5);
+            answerYesOrNo("Do you want to update marks of another student (Y/n): ", "5");
             return;
         }
         System.out.println("\nProgramming Fundamentals Marks   : " + marksPrfArray[index]);
@@ -164,7 +161,7 @@ public class Main {
         addStudentMarks(index, false);
 
         System.out.println("\nMarks have been updated successfully");
-        answerYesOrNo("Do you want to update marks for another student (Y/n): ", 5);
+        answerYesOrNo("Do you want to update marks for another student (Y/n): ", "5");
     }
 
     private static void promptUpdateStudentDetails() {
@@ -181,7 +178,7 @@ public class Main {
         studentNameArray[index] = scanner.next();
 
         System.out.println("\nStudent details has been updated successfully");
-        answerYesOrNo("Do you want to update another student details? (Y/n)", 4);
+        answerYesOrNo("Do you want to update another student details? (Y/n)", "4");
     }
 
     private static void promptAddMarks() {
@@ -198,14 +195,14 @@ public class Main {
         if (marks[0] != -1 && marks[1] != -1) {
             System.out.println("This student marks have been already added.");
             System.out.println("If you want to update marks, please use [5] Update Marks option.\n");
-            answerYesOrNo("Do you want to add marks for another student (Y/n): ", 3);
+            answerYesOrNo("Do you want to add marks for another student (Y/n): ", "3");
             return;
         }
 
         addStudentMarks(index, true);
 
         System.out.println();
-        answerYesOrNo("Marks have been added. Do you want to add marks for another student (Y/n): ", 3);
+        answerYesOrNo("Marks have been added. Do you want to add marks for another student (Y/n): ", "3");
     }
 
     private static void promptAddNewStudentWithMarks() {
@@ -218,7 +215,7 @@ public class Main {
         addStudentMarks(-1, true);
 
         System.out.println();
-        answerYesOrNo("Student has been added successfully. Do you want to add new student (Y/n): ", 2);
+        answerYesOrNo("Student has been added successfully. Do you want to add new student (Y/n): ", "2");
     }
 
     private static void promptAddNewStudent() {
@@ -232,7 +229,7 @@ public class Main {
         marksDbmsArray = addNewElementToArray(marksDbmsArray, -1); // add new student DBMS marks
 
         System.out.println();
-        answerYesOrNo("Student has been added successfully. Do you want to add new student (Y/n): ", 1);
+        answerYesOrNo("Student has been added successfully. Do you want to add new student (Y/n): ", "1");
     }
 
     public static void promptHomePage() {
@@ -247,10 +244,11 @@ public class Main {
         System.out.printf("[7] %-35s [8] %-35s\n", "Print Student Details", "Print Student Ranks");
         System.out.printf("[9] %-35s [10] %-35s\n", "Best in Programming Fundamentals", "Best in Database Management System");
 
-        System.out.print("Enter an option to continue > ");
+        System.out.print("Enter an option number to continue or type 'q' to exit > ");
 
-        int option = scanner.nextInt();
+        String option = scanner.next().trim();
         chooseOption(option);
+
     }
 
     private static void addStudentMarks(int index, boolean isAdd) {
@@ -513,18 +511,19 @@ public class Main {
         array[j] = temp;
     }
 
-    private static void answerYesOrNo(String text, int num) {
+    private static void answerYesOrNo(String text, String num) {
 
         while (true) {
             System.out.print(text);
             String answer = scanner.next().trim().toUpperCase();
 
+            boolean isGoMainMenu = num.equals("8") || num.equals("9") || num.equals("10");
             if ("Y".equals(answer)) {
-                if (num >= 8) promptHomePage();
+                if (isGoMainMenu) promptHomePage();
                 else chooseOption(num);
                 break;
             } else if ("N".equals(answer)) {
-                if (num >= 8) chooseOption(num);
+                if (isGoMainMenu) chooseOption(num);
                 else promptHomePage();
                 break;
             } else {
@@ -553,40 +552,44 @@ public class Main {
         System.out.print("\033[F\033[K"); // Move cursor up one line and clear it
     }
 
-    private static void chooseOption(int option) {
+    private static void chooseOption(String option) {
         switch (option) {
-            case 1:
+            case "1":
                 promptAddNewStudent();
                 break;
-            case 2:
+            case "2":
                 promptAddNewStudentWithMarks();
                 break;
-            case 3:
+            case "3":
                 promptAddMarks();
                 break;
-            case 4:
+            case "4":
                 promptUpdateStudentDetails();
                 break;
-            case 5:
+            case "5":
                 promptUpdateMarks();
                 break;
-            case 6:
+            case "6":
                 promptDeleteStudent();
                 break;
-            case 7:
+            case "7":
                 promptPrintStudentDetails();
                 break;
-            case 8:
+            case "8":
                 promptPrintStudentRanks();
                 break;
-            case 9:
+            case "9":
                 promptRankBestInPrf();
                 break;
-            case 10:
+            case "10":
                 promptRankBestInDbms();
                 break;
-            default:
-                invalidOption();
+            case "q":
+                System.exit(0);
+            default: {
+                System.out.println("\nInvalid option. Please enter correct option.");
+                promptHomePage();
+            }
 
         }
     }
