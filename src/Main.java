@@ -11,6 +11,8 @@ public class Main {
 
     public static String[] validIds;
     public static String[] validNames;
+    public static int[] validPrimaryMarks;
+    public static int[] validSecondaryMarks;
     public static int[] validTotalMarks;
     public static double[] validAvgMarks;
     public static int[] validRank;
@@ -23,11 +25,29 @@ public class Main {
     private static void invalidOption() {
     }
 
-    private static void rankBestInDbms() {
+    private static void promptRankBestInDbms() {
 
     }
 
-    private static void rankBestInPrf() {
+    private static void promptRankBestInPrf() {
+        clearConsole();
+        printDashes();
+        printTitle("BEST IN PROGRAMMING FUNDAMENTALS");
+        printDashes();
+
+        System.out.printf("+%s+%s+%s+%s+%n", "-".repeat(10), "-".repeat(37), "-".repeat(14), "-".repeat(14));
+        System.out.printf("|%-10s|%-37s|%-14s|%-14s|%n", "ID", "Name", "PF Marks", "DBMS Marks");
+        System.out.printf("+%s+%s+%s+%s+%n", "-".repeat(10), "-".repeat(37), "-".repeat(14), "-".repeat(14));
+
+        if (rankStudents("PF")) {
+            for (int i = 0; i < validRank.length; i++) {
+                System.out.printf("|%-10s|%-37s|%-14d|%-14d|%n",
+                        validIds[i], validNames[i], validPrimaryMarks[i], validSecondaryMarks[i]);
+            }
+        }
+        System.out.printf("+%s+%s+%s+%s+%n", "-".repeat(10), "-".repeat(37), "-".repeat(14), "-".repeat(14));
+
+        answerYesOrNo("Do you want to go back to main menu? (Y/n): ", 9);
 
     }
 
@@ -41,7 +61,7 @@ public class Main {
         System.out.printf("|%-7s|%-8s|%-35s|%-12s|%-12s|%n", "Rank", "ID", "Name", "Total Marks", "Avg. Marks");
         System.out.printf("+%s+%s+%s+%s+%s+%n", "-".repeat(7), "-".repeat(8), "-".repeat(35), "-".repeat(12), "-".repeat(12));
 
-        if (rankStudents()) {
+        if (rankStudents("AVG")) {
             for (int i = 0; i < validRank.length; i++) {
                 System.out.printf("|%-7d|%-8s|%-35s|%12d|%-12.2f|%n",
                         validRank[i], validIds[i], validNames[i], validTotalMarks[i], validAvgMarks[i]);
@@ -72,9 +92,9 @@ public class Main {
 
         int totalMarks = marksPrfArray[index] + marksDbmsArray[index];
         double avgMarks = totalMarks / 2.0;
-        int rank = findRank(studentIdArray[index]);
+        int rank = findRankByAvgMarks(studentIdArray[index]);
 
-        int lastRank = getLAstRank();
+        int lastRank = getLastRank();
         if (lastRank == 0) return;
 
         boolean isAvailableTextRank = rank == 1 || rank == 2 || rank == 3 || rank == lastRank;
@@ -88,116 +108,6 @@ public class Main {
         System.out.printf("+%s+%s+%n", "-".repeat(35), "-".repeat(15));
 
         answerYesOrNo("Do you want to search another student details (Y/n): ", 7);
-    }
-
-    private static int getLAstRank() {
-        int max = 0;
-        for (int i = 0; i < validRank.length; i++) {
-            if (max < validRank[i]) {
-                max = validRank[i];
-            }
-        }
-        return max;
-    }
-
-    private static String getTextRank(int rank) {
-        if (rank == 1)
-            return " (First)";
-        if (rank == 2)
-            return " (Second)";
-        if (rank == 3)
-            return " (Third)";
-        if (rank == getLAstRank())
-            return " (Last)";
-
-        return null;
-    }
-
-    private static int findRank(String studentId) {
-        boolean isRanked = rankStudents();
-        if (isRanked) {
-            for (int i = 0; i < validIds.length; i++) {
-                if (validIds[i].equalsIgnoreCase(studentId)) {
-                    return validRank[i];
-                }
-            }
-        }
-//        else{
-//            System.out.println("No students with valid marks available.");
-//        }
-        return -1;
-    }
-
-    private static boolean rankStudents() {
-        int n = studentIdArray.length;
-
-        // Step 1: Filter out students with -1 marks
-        int validCount = 0;
-        for (int i = 0; i < n; i++) {
-            if (marksPrfArray[i] != -1 && marksDbmsArray[i] != -1) {
-                validCount++;
-            }
-        }
-
-        if (validCount == 0) {
-            return false;
-        }
-
-        // Step 2: Create arrays for valid students
-        validIds = new String[validCount];
-        validNames = new String[validCount];
-        validTotalMarks = new int[validCount];
-        validAvgMarks = new double[validCount];
-
-        int index = 0;
-        for (int i = 0; i < n; i++) {
-            if (marksPrfArray[i] != -1 && marksDbmsArray[i] != -1) {
-                validIds[index] = studentIdArray[i];
-                validNames[index] = studentNameArray[i];
-                validTotalMarks[index] = marksPrfArray[i] + marksDbmsArray[i];
-                validAvgMarks[index] = validTotalMarks[index] / 2.0;
-                index++;
-            }
-        }
-
-        // Step 3: Sort students using Bubble Sort (Descending Order based on Avg Marks)
-        for (int i = 0; i < validCount - 1; i++) {
-            for (int j = 0; j < validCount - i - 1; j++) {
-                if (validAvgMarks[j] < validAvgMarks[j + 1]) {
-                    // Swap avg marks
-                    double tempAvg = validAvgMarks[j];
-                    validAvgMarks[j] = validAvgMarks[j + 1];
-                    validAvgMarks[j + 1] = tempAvg;
-
-                    // Swap total marks
-                    int tempTotal = validTotalMarks[j];
-                    validTotalMarks[j] = validTotalMarks[j + 1];
-                    validTotalMarks[j + 1] = tempTotal;
-
-                    // Swap student IDs
-                    String tempId = validIds[j];
-                    validIds[j] = validIds[j + 1];
-                    validIds[j + 1] = tempId;
-
-                    // Swap names
-                    String tempName = validNames[j];
-                    validNames[j] = validNames[j + 1];
-                    validNames[j + 1] = tempName;
-                }
-            }
-        }
-
-        // Step 4: Rank students
-        validRank = new int[validCount];
-        int rank = 1;
-
-        for (int i = 0; i < validCount; i++) {
-            if (i > 0 && validAvgMarks[i - 1] > validAvgMarks[i]) {
-                rank =  i + 1;
-            }
-            validRank[i] = rank;
-        }
-        return true;
     }
 
     private static void promptDeleteStudent() {
@@ -270,7 +180,7 @@ public class Main {
         int[] marks = findMarksById(index);
         if (marks[0] != -1 && marks[1] != -1) {
             System.out.println("This student marks have been already added.");
-            System.out.println("If you want to update marks, please use [4] Update Marks option.\n");
+            System.out.println("If you want to update marks, please use [5] Update Marks option.\n");
             answerYesOrNo("Do you want to add marks for another student (Y/n): ", 3);
             return;
         }
@@ -461,6 +371,131 @@ public class Main {
         return findStudentIndexById(studentId);
     }
 
+    private static int getLastRank() {
+        int max = 0;
+        for (int i = 0; i < validRank.length; i++) {
+            if (max < validRank[i]) {
+                max = validRank[i];
+            }
+        }
+        return max;
+    }
+
+    private static String getTextRank(int rank) {
+        if (rank == 1)
+            return " (First)";
+        if (rank == 2)
+            return " (Second)";
+        if (rank == 3)
+            return " (Third)";
+        if (rank == getLastRank())
+            return " (Last)";
+
+        return null;
+    }
+
+    private static int findRankByAvgMarks(String studentId) {
+        boolean isRanked = rankStudents("AVG");
+        if (isRanked) {
+            for (int i = 0; i < validIds.length; i++) {
+                if (validIds[i].equalsIgnoreCase(studentId)) {
+                    return validRank[i];
+                }
+            }
+        }
+//        else{
+//            System.out.println("No students with valid marks available.");
+//        }
+        return -1;
+    }
+
+    private static boolean rankStudents(String criteria) {
+        int n = studentIdArray.length;
+
+        // Step 1: Filter out students with -1 marks
+        int validCount = 0;
+        for (int i = 0; i < n; i++) {
+            if (marksPrfArray[i] != -1 && marksDbmsArray[i] != -1) {
+                validCount++;
+            }
+        }
+
+        if (validCount == 0) return false;
+
+        // Step 2: Create arrays for valid students
+        validIds = new String[validCount];
+        validNames = new String[validCount];
+        validPrimaryMarks = new int[validCount];
+        validSecondaryMarks = new int[validCount];
+        validTotalMarks = new int[validCount];
+        validAvgMarks = new double[validCount];
+
+        int index = 0;
+        for (int i = 0; i < n; i++) {
+            if (marksPrfArray[i] != -1 && marksDbmsArray[i] != -1) {
+                validIds[index] = studentIdArray[i];
+                validNames[index] = studentNameArray[i];
+                validPrimaryMarks[index] = (criteria.equals("PF")) ? marksPrfArray[i] : marksDbmsArray[i];
+                validSecondaryMarks[index] = (criteria.equals("PF")) ? marksDbmsArray[i] : marksPrfArray[i];
+                validTotalMarks[index] = marksPrfArray[i] + marksDbmsArray[i];
+                validAvgMarks[index] = validTotalMarks[index] / 2.0;
+                index++;
+            }
+        }
+
+        // Step 3: Sort students using Bubble Sort (Descending Order based on Avg Marks)
+        for (int i = 0; i < validCount - 1; i++) {
+            for (int j = 0; j < validCount - i - 1; j++) {
+                boolean swap = false;
+                if (criteria.equals("AVG")) {
+                    swap = validAvgMarks[j] < validAvgMarks[j + 1];
+                } else {
+                    swap = validPrimaryMarks[j] < validPrimaryMarks[j + 1];
+                }
+
+                if (swap) {
+                    swap(validAvgMarks, j, j + 1);
+                    swap(validPrimaryMarks, j, j + 1);
+                    swap(validSecondaryMarks, j, j + 1);
+                    swap(validTotalMarks, j, j + 1);
+                    swap(validIds, j, j + 1);
+                    swap(validNames, j, j + 1);
+                }
+
+            }
+        }
+
+        // Step 4: Rank students
+        validRank = new int[validCount];
+        int rank = 1;
+
+        for (int i = 0; i < validCount; i++) {
+            if (criteria.equals("AVG") && i > 0 && validAvgMarks[i - 1] > validAvgMarks[i]) {
+                rank = i + 1;
+            }
+            validRank[i] = rank;
+        }
+        return true;
+    }
+
+    private static void swap(int[] array, int i, int j) {
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
+    private static void swap(double[] array, int i, int j) {
+        double temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
+    private static void swap(String[] array, int i, int j) {
+        String temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
     private static void answerYesOrNo(String text, int num) {
 
         while (true) {
@@ -468,11 +503,11 @@ public class Main {
             String answer = scanner.next().trim().toUpperCase();
 
             if ("Y".equals(answer)) {
-                if (num == 8) promptHomePage();
+                if (num >= 8) promptHomePage();
                 else chooseOption(num);
                 break;
             } else if ("N".equals(answer)) {
-                if (num == 8) chooseOption(num);
+                if (num >= 8) chooseOption(num);
                 else promptHomePage();
                 break;
             } else {
@@ -528,10 +563,10 @@ public class Main {
                 promptPrintStudentRanks();
                 break;
             case 9:
-                rankBestInPrf();
+                promptRankBestInPrf();
                 break;
             case 10:
-                rankBestInDbms();
+                promptRankBestInDbms();
                 break;
             default:
                 invalidOption();
