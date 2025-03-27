@@ -136,7 +136,7 @@ public class Main {
         deleteStudent(index);
 
         System.out.println("\nStudent has been deleted successfully");
-        answerYesOrNo("Do you want to delete another student? (Y/n)", "6");
+        answerYesOrNo("Do you want to delete another student? (Y/n): ", "6");
 
     }
 
@@ -178,7 +178,7 @@ public class Main {
         studentNameArray[index] = scanner.next();
 
         System.out.println("\nStudent details has been updated successfully");
-        answerYesOrNo("Do you want to update another student details? (Y/n)", "4");
+        answerYesOrNo("Do you want to update another student details? (Y/n): ", "4");
     }
 
     private static void promptAddMarks() {
@@ -375,7 +375,7 @@ public class Main {
             isExistId = findStudentIndexById(studentId) != -1;
 
             if (!isExistId) {
-                isAgain = searchAgainOrNot("Invalid Student ID. Do you want to search again? (Y/n)");
+                isAgain = searchAgainOrNot("Invalid Student ID. Do you want to search again? (Y/n): ");
                 if (!isAgain) {
                     promptHomePage();
                     return -1;
