@@ -9,6 +9,12 @@ public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
 
+    public static String[] validIds;
+    public static String[] validNames;
+    public static int[] validTotalMarks;
+    public static double[] validAvgMarks;
+    public static int[] validRank;
+
     public static void main(String[] args) {
         promptHomePage();
         scanner.close();
@@ -29,7 +35,157 @@ public class Main {
 
     }
 
-    private static void printStudentDetails() {
+    private static void promptPrintStudentDetails() {
+        clearConsole();
+        printDashes();
+        printTitle("PRINT STUDENT DETAILS");
+        printDashes();
+
+        int index = fetchAlreadyExistStudentIndex();
+        System.out.println("Student Name       : " + studentNameArray[index]);
+
+        if (marksPrfArray[index] == -1 || marksDbmsArray[index] == -1) {
+            System.out.println("\nMarks yet to be added.\n");
+            answerYesOrNo("Do you want to search another student details (Y/n): ", 7);
+            return;
+        }
+
+        int totalMarks = marksPrfArray[index] + marksDbmsArray[index];
+        double avgMarks = totalMarks / 2.0;
+        int rank = findRank(studentIdArray[index]);
+
+        int lastRank = getLAstRank();
+        if (lastRank == 0) return;
+
+        boolean isAvailableTextRank = rank == 1 || rank == 2 || rank == 3 || rank == lastRank;
+
+        System.out.printf("+%s+%s+%n", "-".repeat(35), "-".repeat(15));
+        System.out.printf("|%-35s|%15s|%n", "Programming Fundamental Marks", marksPrfArray[index]);
+        System.out.printf("|%-35s|%15s|%n", "Database Management System Marks", marksDbmsArray[index]);
+        System.out.printf("|%-35s|%15s|%n", "Total Marks", totalMarks);
+        System.out.printf("|%-35s|%15s|%n", "Avg. Marks", String.format("%.2f", avgMarks));
+        System.out.printf("|%-35s|%15s|%n", "Rank", rank + (isAvailableTextRank ? getTextRank(rank) : ""));
+        System.out.printf("+%s+%s+%n", "-".repeat(35), "-".repeat(15));
+
+        answerYesOrNo("Do you want to search another student details (Y/n): ", 7);
+    }
+
+    private static int getLAstRank() {
+        int max = 0;
+        for (int i = 0; i < validRank.length; i++) {
+            if (max < validRank[i]) {
+                max = validRank[i];
+            }
+        }
+        return max;
+    }
+
+    private static String getTextRank(int rank) {
+        if(rank == 1)
+                return " (First)";
+        if(rank==2)
+                return " (Second)";
+        if(rank==3)
+                return " (Third)";
+        if(rank==getLAstRank())
+                return " (Last)";
+
+        return null;
+    }
+
+    private static int findRank(String studentId) {
+        boolean isRanked = rankStudents();
+        if (isRanked) {
+            for (int i = 0; i < validIds.length; i++) {
+                if (validIds[i].equalsIgnoreCase(studentId)) {
+                    return validRank[i];
+                }
+            }
+        }
+//        else{
+//            System.out.println("No students with valid marks available.");
+//        }
+        return -1;
+    }
+
+    private static boolean rankStudents() {
+        int n = studentIdArray.length;
+
+        // Step 1: Filter out students with -1 marks
+        int validCount = 0;
+        for (int i = 0; i < n; i++) {
+            if (marksPrfArray[i] != -1 && marksDbmsArray[i] != -1) {
+                validCount++;
+            }
+        }
+
+        if (validCount == 0) {
+            return false;
+        }
+
+        // Step 2: Create arrays for valid students
+        validIds = new String[validCount];
+        validNames = new String[validCount];
+        validTotalMarks = new int[validCount];
+        validAvgMarks = new double[validCount];
+
+        int index = 0;
+        for (int i = 0; i < n; i++) {
+            if (marksPrfArray[i] != -1 && marksDbmsArray[i] != -1) {
+                validIds[index] = studentIdArray[i];
+                validNames[index] = studentNameArray[i];
+                validTotalMarks[index] = marksPrfArray[i] + marksDbmsArray[i];
+                validAvgMarks[index] = validTotalMarks[index] / 2.0;
+                index++;
+            }
+        }
+
+        // Step 3: Sort students using Bubble Sort (Descending Order based on Avg Marks)
+        for (int i = 0; i < validCount - 1; i++) {
+            for (int j = 0; j < validCount - i - 1; j++) {
+                if (validAvgMarks[j] < validAvgMarks[j + 1]) {
+                    // Swap avg marks
+                    double tempAvg = validAvgMarks[j];
+                    validAvgMarks[j] = validAvgMarks[j + 1];
+                    validAvgMarks[j + 1] = tempAvg;
+
+                    // Swap total marks
+                    int tempTotal = validTotalMarks[j];
+                    validTotalMarks[j] = validTotalMarks[j + 1];
+                    validTotalMarks[j + 1] = tempTotal;
+
+                    // Swap student IDs
+                    String tempId = validIds[j];
+                    validIds[j] = validIds[j + 1];
+                    validIds[j + 1] = tempId;
+
+                    // Swap names
+                    String tempName = validNames[j];
+                    validNames[j] = validNames[j + 1];
+                    validNames[j + 1] = tempName;
+                }
+            }
+        }
+
+        // Step 4: Rank students
+        validRank = new int[validCount];
+        int rank = 1;
+
+        for (int i = 0; i < validCount; i++) {
+
+            if (i > 0 && validAvgMarks[i - 1] > validAvgMarks[i]) {
+                rank = i + 1;
+            }
+
+            validRank[i] = rank;
+
+            // Handle skipping ranks for same average marks
+            if (i > 0 && validAvgMarks[i - 1] == validAvgMarks[i]) {
+                rank++;
+            }
+
+        }
+        return true;
     }
 
     private static void promptDeleteStudent() {
@@ -45,37 +201,6 @@ public class Main {
         System.out.println("\nStudent has been deleted successfully");
         answerYesOrNo("Do you want to delete another student? (Y/n)", 6);
 
-    }
-
-    private static void deleteStudent(int index) {
-        studentIdArray = removeElementFromArray(studentIdArray, index);
-        studentNameArray = removeElementFromArray(studentNameArray, index);
-        marksPrfArray = removeElementFromArray(marksPrfArray, index);
-        marksDbmsArray = removeElementFromArray(marksDbmsArray, index);
-    }
-
-    private static int[] removeElementFromArray(int[] array, int index) {
-        int[] newArray = new int[array.length - 1];
-        for (int i = 0; i < newArray.length; i++) {
-            if (i < index) {
-                newArray[i] = array[i];
-            } else {
-                newArray[i] = array[i + 1];
-            }
-        }
-        return newArray;
-    }
-
-    private static String[] removeElementFromArray(String[] array, int index) {
-        String[] newArray = new String[array.length - 1];
-        for (int i = 0; i < newArray.length; i++) {
-            if (i < index) {
-                newArray[i] = array[i];
-            } else {
-                newArray[i] = array[i + 1];
-            }
-        }
-        return newArray;
     }
 
     private static void promptUpdateMarks() {
@@ -253,6 +378,37 @@ public class Main {
         return tempArray;
     }
 
+    private static void deleteStudent(int index) {
+        studentIdArray = removeElementFromArray(studentIdArray, index);
+        studentNameArray = removeElementFromArray(studentNameArray, index);
+        marksPrfArray = removeElementFromArray(marksPrfArray, index);
+        marksDbmsArray = removeElementFromArray(marksDbmsArray, index);
+    }
+
+    private static int[] removeElementFromArray(int[] array, int index) {
+        int[] newArray = new int[array.length - 1];
+        for (int i = 0; i < newArray.length; i++) {
+            if (i < index) {
+                newArray[i] = array[i];
+            } else {
+                newArray[i] = array[i + 1];
+            }
+        }
+        return newArray;
+    }
+
+    private static String[] removeElementFromArray(String[] array, int index) {
+        String[] newArray = new String[array.length - 1];
+        for (int i = 0; i < newArray.length; i++) {
+            if (i < index) {
+                newArray[i] = array[i];
+            } else {
+                newArray[i] = array[i + 1];
+            }
+        }
+        return newArray;
+    }
+
     private static int findStudentIndexById(String studentId) {
         for (int i = 0; i < studentIdArray.length; i++) {
             if (studentIdArray[i].equalsIgnoreCase(studentId))
@@ -342,7 +498,7 @@ public class Main {
             case 6:
                 promptDeleteStudent();
             case 7:
-                printStudentDetails();
+                promptPrintStudentDetails();
             case 8:
                 printStudentRanks();
             case 9:
