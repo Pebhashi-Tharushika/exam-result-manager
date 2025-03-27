@@ -31,7 +31,26 @@ public class Main {
 
     }
 
-    private static void printStudentRanks() {
+    private static void promptPrintStudentRanks() {
+        clearConsole();
+        printDashes();
+        printTitle("PRINT STUDENT RANKS");
+        printDashes();
+
+        System.out.printf("+%s+%s+%s+%s+%s+%n", "-".repeat(7), "-".repeat(8), "-".repeat(35), "-".repeat(12), "-".repeat(12));
+        System.out.printf("|%-7s|%-8s|%-35s|%-12s|%-12s|%n", "Rank", "ID", "Name", "Total Marks", "Avg. Marks");
+        System.out.printf("+%s+%s+%s+%s+%s+%n", "-".repeat(7), "-".repeat(8), "-".repeat(35), "-".repeat(12), "-".repeat(12));
+
+        if (rankStudents()) {
+            for (int i = 0; i < validRank.length; i++) {
+                System.out.printf("|%-7d|%-8s|%-35s|%12d|%-12.2f|%n",
+                        validRank[i], validIds[i], validNames[i], validTotalMarks[i], validAvgMarks[i]);
+            }
+        }
+
+        System.out.printf("+%s+%s+%s+%s+%s+%n", "-".repeat(7), "-".repeat(8), "-".repeat(35), "-".repeat(12), "-".repeat(12));
+
+        answerYesOrNo("Do you want to go back to main menu? (Y/n): ", 8);
 
     }
 
@@ -42,6 +61,7 @@ public class Main {
         printDashes();
 
         int index = fetchAlreadyExistStudentIndex();
+        if (index == -1) return;
         System.out.println("Student Name       : " + studentNameArray[index]);
 
         if (marksPrfArray[index] == -1 || marksDbmsArray[index] == -1) {
@@ -81,14 +101,14 @@ public class Main {
     }
 
     private static String getTextRank(int rank) {
-        if(rank == 1)
-                return " (First)";
-        if(rank==2)
-                return " (Second)";
-        if(rank==3)
-                return " (Third)";
-        if(rank==getLAstRank())
-                return " (Last)";
+        if (rank == 1)
+            return " (First)";
+        if (rank == 2)
+            return " (Second)";
+        if (rank == 3)
+            return " (Third)";
+        if (rank == getLAstRank())
+            return " (Last)";
 
         return null;
     }
@@ -195,6 +215,7 @@ public class Main {
         printDashes();
 
         int index = fetchAlreadyExistStudentIndex();
+        if (index == -1) return;
 
         deleteStudent(index);
 
@@ -210,6 +231,7 @@ public class Main {
         printDashes();
 
         int index = fetchAlreadyExistStudentIndex();
+        if (index == -1) return;
         System.out.println("Student Name       : " + studentNameArray[index]);
 
         if (marksPrfArray[index] == -1 || marksDbmsArray[index] == -1) {
@@ -233,6 +255,7 @@ public class Main {
         printDashes();
 
         int index = fetchAlreadyExistStudentIndex();
+        if (index == -1) return;
         System.out.println("Student Name       : " + studentNameArray[index]);
 
         System.out.print("\nEnter the new student name  : ");
@@ -249,6 +272,7 @@ public class Main {
         printDashes();
 
         int index = fetchAlreadyExistStudentIndex();
+        if (index == -1) return;
         System.out.println("Student Name       : " + studentNameArray[index]);
 
         int[] marks = findMarksById(index);
@@ -437,7 +461,7 @@ public class Main {
                 isAgain = searchAgainOrNot("Invalid Student ID. Do you want to search again? (Y/n)");
                 if (!isAgain) {
                     promptHomePage();
-                    break;
+                    return -1;
                 }
             }
 
@@ -452,9 +476,12 @@ public class Main {
             String answer = scanner.next().trim().toUpperCase();
 
             if ("Y".equals(answer)) {
-                chooseOption(num);
+                if (num == 8) promptHomePage();
+                else chooseOption(num);
+                break;
             } else if ("N".equals(answer)) {
-                promptHomePage();
+                if (num == 8) chooseOption(num);
+                else promptHomePage();
                 break;
             } else {
                 moveCursorUpAndClear();  // Move cursor to top and clear the line
@@ -489,22 +516,31 @@ public class Main {
                 break;
             case 2:
                 promptAddNewStudentWithMarks();
+                break;
             case 3:
                 promptAddMarks();
+                break;
             case 4:
                 promptUpdateStudentDetails();
+                break;
             case 5:
                 promptUpdateMarks();
+                break;
             case 6:
                 promptDeleteStudent();
+                break;
             case 7:
                 promptPrintStudentDetails();
+                break;
             case 8:
-                printStudentRanks();
+                promptPrintStudentRanks();
+                break;
             case 9:
                 rankBestInPrf();
+                break;
             case 10:
                 rankBestInDbms();
+                break;
             default:
                 invalidOption();
 
@@ -516,6 +552,7 @@ public class Main {
         int textLength = title.length();
         int padding = (totalWidth - textLength - 2) / 2; // 2 for the border "|"
 
+        if (title.length() % 2 == 1) title = title + " ";
         System.out.printf("|%" + padding + "s%s%" + padding + "s|%n", "", title, "");
     }
 
