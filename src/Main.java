@@ -192,18 +192,10 @@ public class Main {
         int rank = 1;
 
         for (int i = 0; i < validCount; i++) {
-
             if (i > 0 && validAvgMarks[i - 1] > validAvgMarks[i]) {
-                rank = i + 1;
+                rank =  i + 1;
             }
-
             validRank[i] = rank;
-
-            // Handle skipping ranks for same average marks
-            if (i > 0 && validAvgMarks[i - 1] == validAvgMarks[i]) {
-                rank++;
-            }
-
         }
         return true;
     }
