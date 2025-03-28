@@ -4,7 +4,7 @@
 Exam Result Manager is a **Java-based CLI (Command Line Interface) desktop application** designed to help manage student exam results 
 efficiently. This application was developed to apply my knowledge of programming fundamentals, including basic data structures such as 
 fixed arrays for efficient memory allocation, one-dimensional arrays for linear data storage and multi-dimensional arrays for structured 
-data representation, along with array sorting algorithms to solve fundamental programming problems using a variety of skills and strategies.
+data representation, along with array searching algorithms and array sorting algorithms to solve fundamental programming problems using a variety of skills and strategies.
 
 ### Features
 - **User-Friendly CLI Interface**
@@ -41,10 +41,11 @@ data representation, along with array sorting algorithms to solve fundamental pr
 
 ### Technologies Used
 - **Programming Language:** Java
-- **Data Structures:** Arrays
-- **Sorting Algorithm:** Bubble Sort
+  - **Data Structures** 
+  - **Array Sorting Algorithm**
+  - **Array Searching Algorithm** 
 
-#### Use Case Diagram in UML
+### Use Case Diagram in UML
 ![use-case-diagram](/assets/use-case-diagram.png)
 
 ### Preview
