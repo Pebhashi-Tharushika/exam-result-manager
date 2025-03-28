@@ -44,6 +44,8 @@ data representation, along with array sorting algorithms to solve fundamental pr
 - **Data Structures:** Arrays
 - **Sorting Algorithm:** Bubble Sort
 
+#### Use Case Diagram in UML
+![use-case-diagram](/assets/use-case-diagram.png)
 
 ### Preview
 
